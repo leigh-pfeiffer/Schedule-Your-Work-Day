@@ -1,10 +1,8 @@
-// gets data for the header date
+//Header
 function getHeaderDate() {
     var currentHeaderDate = moment().format('dddd, MMMM Do');
     $("#currentDay").text(currentHeaderDate);
 }
-
-// loads header date
 getHeaderDate();
 
 // the day. would like to simplify if possible 
@@ -76,6 +74,7 @@ var myDay = [
 ]
 
 
+
 // saves info
 function saveReminders() {
     localStorage.setItem("myDay", JSON.stringify(myDay));
@@ -83,10 +82,9 @@ function saveReminders() {
 
 
 function displayReminders() {
-    myDay.forEach(function (_thisHour) {
-        $(`#${_thisHour.id}`).val(_thisHour.reminder);
-    })
-}
+    for( var i = 0; i < myDay.length; i++)
+        $(`#${myDay[i].id}`).val(myDay[i].reminder);
+    }
 
 // loads local storage
 function init() {
@@ -102,49 +100,46 @@ function init() {
 
 
 // schedule
-myDay.forEach(function(thisHour) {
+
+for( var i = 0; i < myDay.length; i++){
     
-    // creates timeblocks row
     var hourRow = $("<form>").attr({
         "class": "row"
     });
     $(".container").append(hourRow);
 
-    // creates time field
     var hourField = $("<div>")
-        .text(`${thisHour.hour}${thisHour.meridiem}`)
+        .text(`${myDay[i].hour}${myDay[i].meridiem}`)
         .attr({
             "class": "col-md-2 hour"
     });
 
-    // creates schdeduler data
     var hourPlan = $("<div>")
         .attr({
-            "class": "col-lg-8 description p-0"
+            "class": "col-md-8 description p-0"
         });
     var planData = $("<textarea>");
 
-
     hourPlan.append(planData);
 
-    planData.attr("id", thisHour.id);
-    console.log(thisHour.time)
+    planData.attr("id", myDay[i].id);
+    console.log(myDay[i].time)
     console.log(moment().format("HH"))
-    if (thisHour.time < moment().format("HH")) {
+    if (myDay[i].time < moment().format("HH")) {
         planData.attr ({
             "class": "past", 
         })
-    } else if (thisHour.time === moment().format("HH")) {
+    } else if (myDay[i].time === moment().format("HH")) {
         planData.attr({
             "class": "present"
         })
-    } else if (thisHour.time > moment().format("HH")) {
+    } else if (myDay[i].time > moment().format("HH")) {
         planData.attr({
             "class": "future"
         })
     }
 
-    // creates save button
+    // save
     var saveButton = $("<i class='far fa-save fa-lg'></i>")
 
     var savePlan = $("<button>")
@@ -155,13 +150,13 @@ myDay.forEach(function(thisHour) {
     savePlan.append(saveButton);
 
     hourRow.append(hourField, hourPlan, savePlan);
-})
+}
 
 // loads storage
 init();
 
 
-// saves data to be used in localStorage
+// saves 
 $(".saveBtn").on("click", function(event) {
     event.preventDefault();
     var saveIndex = $(this).siblings(".description").children(".future").attr("id");
